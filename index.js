@@ -7,11 +7,10 @@ app.get('/',(req,res)=>{
     res.send("You are at home route")
 })
 // app.use express.json
-app.use(express.raw());
+app.use(express.text());
 // Home route with post method
-// toString to convert the buffer
 app.post('/',(req,res)=>{
-    console.log(req.body.toString());
+    console.log(req.body);
     res.send("You are at home with  post method")
 })
 
