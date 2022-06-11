@@ -1,13 +1,16 @@
 const express = require("express");
 const app = express();
 const PORT = 3000;
+var bodyParser = require('body-parser')
 
 // Home route 
 app.get('/',(req,res)=>{
     res.send("You are at home route")
 })
 // app.use express.json
-app.use(express.text());
+app.use(bodyParser.urlencoded({ extended: true }))
+// 
+// app.use(bodyParser.json())
 // Home route with post method
 app.post('/',(req,res)=>{
     console.log(req.body);
