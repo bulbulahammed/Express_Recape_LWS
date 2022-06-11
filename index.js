@@ -1,11 +1,15 @@
 const express = require("express");
 const app = express();
 const PORT = 3000;
-var bodyParser = require('body-parser')
+const router = express.Router();
+
+
+// use router in app
+app.use(router);
 
 // Home route 
-app.get('/',(req,res)=>{
-    res.send("You are at home route")
+router.get('/',(req,res)=>{
+    res.send("You are at home route, using the express router")
 })
 // app.use express.json
 app.use(express.static(__dirname + "/public/"));
