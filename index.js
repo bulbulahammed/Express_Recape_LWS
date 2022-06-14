@@ -1,24 +1,18 @@
-// Example of sub path mount
-const express = require("express");
-// Create app
+const express = require('express');
 const app = express();
-// Create sub app
-const admin = express();
 const PORT = 3000;
 
-// Home route
+
 app.get('/',(req,res)=>{
-    res.send("You are at app's home route")
-});
+    console.log(req.baseUrl);
+    res.send("You are at home route")
+})
 
-// Admin Dashboard route
-admin.get("/dashboard",(req,res)=>{
-    res.send("Welcome to Dashboard")
-});
 
-app.use("/admin", admin)
-
+app.get('/user/:id',(req,res)=>{
+    res.send("You are at home route");
+})
 
 app.listen(PORT,()=>{
-    console.log(`App is listening at localhost:${PORT}`)
+    console.log(`App listening at localhost:${PORT}`)
 })
