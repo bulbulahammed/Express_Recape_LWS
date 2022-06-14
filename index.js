@@ -7,6 +7,7 @@ const adminRoute = express.Router();
 
 // Admin route
 adminRoute.get("/dashboard",(req,res)=>{
+    console.log(req.baseUrl);
     res.send("You are at Admin route");
 })
 // Home route 
@@ -14,8 +15,8 @@ app.get('/',(req,res)=>{
     console.log(req.baseUrl)
     res.send("You are at home route")
 })
-// app.use express.json
-app.use(express.json());
+// 
+app.use('/admin',adminRoute)
 // Home route with post method
 app.post('/',(req,res)=>{
     console.log(req.body);
