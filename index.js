@@ -4,6 +4,7 @@ const PORT = 3000;
 
 // Home route 
 app.get('/',(req,res)=>{
+    console.log(req.baseUrl)
     res.send("You are at home route")
 })
 // app.use express.json
