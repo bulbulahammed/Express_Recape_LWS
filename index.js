@@ -2,6 +2,13 @@ const express = require("express");
 const app = express();
 const PORT = 3000;
 
+
+const adminRoute = express.Router();
+
+// Admin route
+adminRoute.get("/dashboard",(req,res)=>{
+    res.send("You are at Admin route");
+})
 // Home route 
 app.get('/',(req,res)=>{
     console.log(req.baseUrl)
