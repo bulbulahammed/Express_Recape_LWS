@@ -1,20 +1,35 @@
 const express = require("express");
 const app = express();
 const PORT = 3000;
+const mongoose = require("mongoose");
+const todoHandler = require("./routes/todoHandler");
 
+app.use(express.json());
 
 // Home route 
 app.get('/',(req,res)=>{
-    console.log(req.baseUrl)
     res.send("You are at home route")
-})
+});
 
-const errHandler = (err,req,res,next)=>{
-    console.log(err);
-    res.status(500).send("There is a problem in server side");
+// mongoose connect
+mongoose.connect('mongodb://localhost/todos',{
+    useNewUrlParser:true,
+    useUnifiedTopology:true,
+})
+.then(()=> console.log("connection successful"))
+.catch(err=> console.log(err))
+
+
+// Default Error handler
+function errHandler (err,req,res,next){
+    if(res.headersSent){
+        return next(err);
+    }
+    res.status(500).json({error:err});
 };
 
-app.use(errHandler());
+// app route
+app.use("/todo", todoHandler);
 
 app.listen(PORT,()=>{
     console.log(`App is listening at localhost:${PORT}`)
