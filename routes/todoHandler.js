@@ -25,17 +25,26 @@ router.post('/', async(req,res)=>{
    });
 });
 
+// Post multiple todo
+router.post('/all',async(req,res)=>{
+ await Todo.insertMany(req.body, (err)=>{
+    if(err){
+        res.status(500).json({
+            message: "There is a error in server side"
+        });
+    }else{
+        res.status(200).json({
+            message: "Your multiple data inserted successfully"
+        });
+    }
+ })
+});
 
 // Get A the todo by ID
 router.get('/:id',async(req,res)=>{
     
 });
 
-
-// Post multiple todo
-router.post('/all',async(req,res)=>{
-
-});
 
 // update a todo
 router.put('/:id',async(req,res)=>{
