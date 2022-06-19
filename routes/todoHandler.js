@@ -47,27 +47,27 @@ router.get('/:id',async(req,res)=>{
 
 
 // update a todo
-router.put('/:id',async(req,res)=>{
+router.put("/:id",async(req,res)=>{
     await Todo.updateOne(
         {_id: req.params.id},
         {
             $set:{
-                status:"active",
+                status: "active",
             },
         },
         (err)=>{
             if(err){
                 res.status(500).json({
-                    error:"There was a server side error",
-                })
+                    error: "There is a server side error",
+                });
             }else{
                 res.status(200).json({
-                    message:"Todo updated successfully",
+                    message: "Todo Inserted successfully",
                 });
             }
         }
-    );
-});
+    )
+})
 
 // Delete a todo
 router.delete('/:id',async(req,res)=>{
