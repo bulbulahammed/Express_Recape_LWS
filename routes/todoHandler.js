@@ -2,76 +2,153 @@ const express = require("express");
 const mongoose = require("mongoose");
 const router = express.Router();
 const todoSchema = require("../schemas/todoSchema");
-const Todo = mongoose.model("Todo", todoSchema);
+const Todo = new mongoose.model("Todo", todoSchema);
 
-
-// Get all the todo
-router.get('/',async(req,res)=>{
-    res.send("You will see to do here")
-});
-// Post A the todo
-router.post('/', async(req,res)=>{
-   const newTodo = new Todo(req.body);
-   await newTodo.save((err)=>{
-    if(err){
+// GET ALL THE TODOS
+router.get("/", (req, res) => {
+  Todo.find({ status: "active" })
+    .select({
+      _id: 0,
+      _v: 0,
+      date: 0,
+    })
+    .limit(2)
+    .exec((err, data) => {
+      if (err) {
         res.status(500).json({
-            error: "There is a server side error"
+          error: "There was a server side error!",
         });
-    }else{
+      } else {
         res.status(200).json({
-            message: "Todo inserted successfully!"
+          result: data,
+          message: "Success",
         });
-    }
-   });
+      }
+    });
 });
 
-// Post multiple todo
-router.post('/all',async(req,res)=>{
- await Todo.insertMany(req.body, (err)=>{
-    if(err){
+// GET ACTIVE TODOS
+router.get("/active", async (req, res) => {
+  const todo = new Todo();
+  const data = await todo.findActive();
+  res.status(200).json({
+    data,
+  });
+});
+
+// GET ACTIVE TODOS with callback
+router.get("/active-callback", (req, res) => {
+  const todo = new Todo();
+  todo.findActiveCallback((err, data) => {
+    res.status(200).json({
+      data,
+    });
+  });
+});
+
+// GET ACTIVE TODOS
+router.get("/js", async (req, res) => {
+  const data = await Todo.findByJS();
+  res.status(200).json({
+    data,
+  });
+});
+
+// GET TODOS BY LANGUAGE
+router.get("/language", async (req, res) => {
+  const data = await Todo.find().byLanguage("react");
+  res.status(200).json({
+    data,
+  });
+});
+
+// GET A TODO by ID
+router.get("/:id", async (req, res) => {
+  try {
+    const data = await Todo.find({ _id: req.params.id });
+    res.status(200).json({
+      result: data,
+      message: "Success",
+    });
+  } catch (err) {
+    res.status(500).json({
+      error: "There was a server side error!",
+    });
+  }
+});
+
+// POST A TODO
+router.post("/", (req, res) => {
+  const newTodo = new Todo(req.body);
+  newTodo.save((err) => {
+    if (err) {
+      res.status(500).json({
+        error: "There was a server side error!",
+      });
+    } else {
+      res.status(200).json({
+        message: "Todo was inserted successfully!",
+      });
+    }
+  });
+});
+
+// POST MULTIPLE TODO
+router.post("/all", (req, res) => {
+  Todo.insertMany(req.body, (err) => {
+    if (err) {
+      res.status(500).json({
+        error: "There was a server side error!",
+      });
+    } else {
+      res.status(200).json({
+        message: "Todos were inserted successfully!",
+      });
+    }
+  });
+});
+
+// PUT TODO
+router.put("/:id", (req, res) => {
+  const result = Todo.findByIdAndUpdate(
+    { _id: req.params.id },
+    {
+      $set: {
+        status: "active",
+      },
+    },
+    {
+      new: true,
+      useFindAndModify: false,
+    },
+    (err) => {
+      if (err) {
         res.status(500).json({
-            message: "There is a error in server side"
+          error: "There was a server side error!",
         });
-    }else{
+      } else {
         res.status(200).json({
-            message: "Your multiple data inserted successfully"
+          message: "Todo was updated successfully!",
         });
+      }
     }
- })
+  );
+  console.log(result);
 });
 
-// Get A the todo by ID
-router.get('/:id',async(req,res)=>{
-    
-});
-
-
-// update a todo
-router.put("/:id",async(req,res)=>{
-    await Todo.updateOne(
-        {_id: req.params.id},
-        {
-            $set:{
-                status: "active",
-            },
-        },
-        (err)=>{
-            if(err){
-                res.status(500).json({
-                    error: "There is a server side error",
-                });
-            }else{
-                res.status(200).json({
-                    message: "Todo Inserted successfully",
-                });
-            }
-        }
-    )
-})
-
-// Delete a todo
-router.delete('/:id',async(req,res)=>{
-    
+// DELETE TODO
+router.delete("/:id", (req, res) => {
+  Todo.deleteOne({ _id: req.params.id }, (err) => {
+    if (err) {
+      res.status(500).json({
+        error: "There was a server side error!",
+      });
+    } else {
+      res.status(200).json({
+        message: "Todo was deleted successfully!",
+      });
+    }
+  });
 });
 
 module.exports = router;
